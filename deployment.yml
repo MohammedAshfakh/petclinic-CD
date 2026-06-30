@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic
+  namespace: petclinic-ns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: petclinic-api
+  template:
+    metadata:
+      labels:
+        app: petclinic-api
+    spec:
+      containers:
+      - name: petclinic-api
+        image: 799517508141.dkr.ecr.us-east-1.amazonaws.com/petclinic:latest
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+
